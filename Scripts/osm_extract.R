@@ -9,10 +9,10 @@ library("ggplot2")
 options(timeout = 1800)#30 min timeout for extract
 
 osm_network <- oe_get(
-  "London",
+  "City of London",
   download_directory = "data",
   query = "
-    SELECT osm_id, highway, other_tags, geometry, bicycle, foot, segregated
+    SELECT osm_id, highway, other_tags, geometry, bicycle, foot, segregated, cycleway
     FROM lines
      WHERE highway IS NOT NULL
       AND highway IN (
@@ -28,5 +28,5 @@ osm_network <- oe_get(
       'tertiary'
     )
   ",
-  extra_tags = c("bicycle","foot","segregated")
+  extra_tags = c("bicycle","foot","segregated","cycleway")
 )
