@@ -37,9 +37,8 @@ osm_network <- oe_get(
       osm_id,
       highway,
       bicycle,
-      foot,
-      segregated,
-      cycleway,
+      construction,
+      horse,
       geometry
     FROM lines
     WHERE highway IN (
@@ -55,7 +54,7 @@ osm_network <- oe_get(
       'tertiary'
     )
   ",
-   extra_tags = c("bicycle","foot","segregated","cycleway")
+   extra_tags = c("bicycle","construction","horse")
 
 )
 
@@ -68,37 +67,54 @@ network_lines <- st_intersection(
 )
 
 #==================
-# CATEGORISE
+# CATEGORISE (as in OSM carto wiki)
 #==================
 network <- network_lines |>
   mutate(
     network_type = case_when(
 
-      highway == "cycleway" &
-        segregated == "yes" ~
-        "Segregated cycle",
+      # Cycleway
+      highway == "cycleway" |
+        (highway == "path" & bicycle == "designated") ~
+        "Cycleway",
 
-      highway %in% c("footway", "path") &
-        bicycle == "yes" &
-        segregated == "yes" ~
-        "Segregated cycle",
+      # Bridleway
+      highway == "bridleway" |
+        (highway == "path" & horse == "designated") ~
+        "Bridleway",
 
-      highway %in% c("footway", "path") &
-        bicycle == "yes" &
-        segregated != "yes" ~
-        "Shared foot/cycle",
+      # Footway / multi-use path
+      highway %in% c("footway", "path") ~
+        "Footway / Multi-use path",
 
-      highway %in% c("footway", "pedestrian") &
-        (is.na(bicycle) | bicycle != "yes") ~
-        "Foot only",
+      # Steps
+      highway == "steps" ~
+        "Steps",
 
+      # Construction
+      highway == "construction" &
+        construction %in% c(
+          "bridleway",
+          "cycleway",
+          "footway",
+          "path",
+          "steps",
+          "track"
+        ) ~
+        "Under construction",
+
+      # Roads
       highway %in% c(
-        "living_street",
-        "residential",
-        "service",
-        "track",
+        "motorway",
+        "trunk",
+        "primary",
+        "secondary",
         "tertiary",
-        "unclassified"
+        "unclassified",
+        "residential",
+        "living_street",
+        "service",
+        "track"
       ) ~
         "Road network",
 
@@ -110,19 +126,43 @@ network <- network_lines |>
 #==================
 # PLOT
 #==================
-ggplot(network) +
+ggplot() +
+
   geom_sf(
-    aes(colour = network_type),
-    linewidth = 0.35
+    data = filter(network, network_type == "Road network"),
+    colour = "grey60",
+    linewidth = 0.18
   ) +
-  scale_colour_manual(
-    values = c(
-      "Segregated cycle" = "#009E73",
-      "Shared foot/cycle" = "#56B4E9",
-      "Foot only" = "#E69F00",
-      "Road network" = "grey50",
-      "Other" = "grey80"
-    )
+
+  geom_sf(
+    data = filter(network, network_type == "Footway / Multi-use path"),
+    colour = "#FA8072",
+    linewidth = 0.18
   ) +
-  theme_void() +
-  labs(colour = NULL)
+
+  geom_sf(
+    data = filter(network, network_type == "Bridleway"),
+    colour = "#008000",
+    linewidth = 0.18
+  ) +
+
+  geom_sf(
+    data = filter(network, network_type == "Cycleway"),
+    colour = "#0000FF",
+    linewidth = 0.22
+  ) +
+
+  geom_sf(
+    data = filter(network, network_type == "Steps"),
+    colour = "#FA8072",
+    linewidth = 0.18
+  ) +
+
+  geom_sf(
+    data = filter(network, network_type == "Under construction"),
+    colour = "#AAAAAA",
+    linewidth = 0.18,
+    linetype = "22"
+  ) +
+
+  theme_void()
