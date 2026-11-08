@@ -1,0 +1,13 @@
+# Generated network outputs
+Data/*
+!Data/.gitkeep
+
+# GeoPackages
+*.gpkg
+
+# OSM downloads
+*.osm.pbf
+
+# R temporary files
+.Rhistory
+.RData
