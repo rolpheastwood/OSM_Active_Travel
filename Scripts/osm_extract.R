@@ -12,9 +12,10 @@ osm_network <- oe_get(
   "London",
   download_directory = "data",
   query = "
-    SELECT osm_id, highway, other_tags, geometry
+    SELECT osm_id, highway, other_tags, geometry, bicycle, foot, segregated
     FROM lines
-    WHERE highway IN (
+     WHERE highway IS NOT NULL
+      AND highway IN (
       'cycleway',
       'path',
       'footway',
@@ -27,5 +28,5 @@ osm_network <- oe_get(
       'tertiary'
     )
   ",
-  extra_tags = ''
+  extra_tags = c("bicycle","foot","segregated")
 )
