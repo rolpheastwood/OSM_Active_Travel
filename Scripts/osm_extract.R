@@ -16,11 +16,11 @@ centre <- st_as_sf(
 )
 
 #==================
-# CREATE 10 KM BUFFER
+# CREATE BUFFER
 #==================
-buffer_10km <- centre |>
+buffer <- centre |>
   st_transform(27700) |>
-  st_buffer(10000) |>
+  st_buffer(10000) |> #10000m
   st_transform(4326)
 
 #==================
@@ -63,7 +63,7 @@ osm_network <- oe_get(
 #==================
 network_lines <- st_intersection(
   osm_network,
-  st_transform(buffer_10km, st_crs(osm_network))
+  st_transform(buffer, st_crs(osm_network))
 )
 
 #==================
@@ -81,15 +81,11 @@ network <- network_lines |>
       # Bridleway
       highway == "bridleway" |
         (highway == "path" & horse == "designated") ~
-        "Bridleway",
+        "Footway",
 
-      # Footway / multi-use path
-      highway %in% c("footway", "path") ~
-        "Footway / Multi-use path",
-
-      # Steps
-      highway == "steps" ~
-        "Steps",
+      # Pedestrian
+      highway %in% c("living_street","step","pedestrian","footway", "path") ~
+        "Footway",
 
       # Construction
       highway == "construction" &
@@ -112,7 +108,6 @@ network <- network_lines |>
         "tertiary",
         "unclassified",
         "residential",
-        "living_street",
         "service",
         "track"
       ) ~
@@ -130,37 +125,25 @@ ggplot() +
 
   geom_sf(
     data = filter(network, network_type == "Road network"),
-    colour = "grey60",
+    colour = "#808080",
     linewidth = 0.18
   ) +
 
   geom_sf(
-    data = filter(network, network_type == "Footway / Multi-use path"),
-    colour = "#FA8072",
-    linewidth = 0.18
-  ) +
-
-  geom_sf(
-    data = filter(network, network_type == "Bridleway"),
-    colour = "#008000",
-    linewidth = 0.18
+    data = filter(network, network_type == "Footway"),
+    colour = "#00B386",
+    linewidth = 0.23
   ) +
 
   geom_sf(
     data = filter(network, network_type == "Cycleway"),
-    colour = "#0000FF",
-    linewidth = 0.22
+    colour = "#6B1FFF",
+    linewidth = 0.42
   ) +
-
-  geom_sf(
-    data = filter(network, network_type == "Steps"),
-    colour = "#FA8072",
-    linewidth = 0.18
-  ) +
-
+  
   geom_sf(
     data = filter(network, network_type == "Under construction"),
-    colour = "#AAAAAA",
+    colour = "#A56A43",
     linewidth = 0.18,
     linetype = "22"
   ) +
