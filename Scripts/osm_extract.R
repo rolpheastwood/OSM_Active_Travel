@@ -2,24 +2,58 @@ library("osmextract")
 library("sf")
 library("dplyr")
 library("ggplot2")
+library("osmdata")
+library("svDialogs")
+
+#==================
+# CHOOSE CITY
+#==================
+repeat {
+
+  city <- dlgInput(
+    message = "Enter a city:",
+    default = "London"
+  )$res
+
+  if (is.null(city) || city == "")
+    next
+
+  bb <- tryCatch(
+    getbb(city),
+    error = function(e) NULL
+  )
+
+  if (!is.null(bb)) {
+    message("✓ Found: ", city)
+    break
+  }
+
+  dlgMessage(
+    "City not found. Please check the spelling and try again.",
+    type = "ok"
+  )
+
+}
 
 #==================
 # FIND CENTRE
 #==================
-centre <- st_as_sf(
-  data.frame(
-    lon = -0.1276,
-    lat = 51.5074
+centre <- st_sfc(
+  st_point(
+    c(
+      mean(bb[1, ]),
+      mean(bb[2, ])
+    )
   ),
-  coords = c("lon", "lat"),
   crs = 4326
-)
+) |>
+  st_as_sf()
 
 #==================
 # CREATE BUFFER
 #==================
 buffer <- centre |>
-  st_transform(27700) |>
+  st_transform(3857) |> #web mercator projection
   st_buffer(10000) |> #10000m
   st_transform(4326)
 
@@ -29,7 +63,7 @@ buffer <- centre |>
 options(timeout = 1800)
 
 osm_network <- oe_get(
-  "greater-london",
+  city,
   provider = "geofabrik",
   download_directory = "data",
   query = "
