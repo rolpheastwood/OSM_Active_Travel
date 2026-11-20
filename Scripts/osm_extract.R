@@ -192,7 +192,8 @@ plot <- ggplot() +
 ) +
 theme_void()+
 theme(
-      legend.position = "bottom",
+  legend.position = "bottom",
+  legend.text = element_text(colour = "white")
 )
 
 #view plot
@@ -206,5 +207,5 @@ ggsave(
   width = 10,
   height = 10,
   dpi = 300,
-  bg = "white"
+  bg = "black"
 )

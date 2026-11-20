@@ -18,9 +18,9 @@ Required packages will be installed automatically if missing.
 
 ## Data
 
-Downloaded OpenStreetMap extracts are stored in the `Data` folder.
+OpenStreetMap extracts are stored in the `Data` folder.
 
-## Output
+## Outputs
 
 PNG maps are exported to the `Outputs` folder using the selected location as the file name.
 
