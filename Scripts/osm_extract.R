@@ -193,7 +193,8 @@ plot <- ggplot() +
 theme_void()+
 theme(
   legend.position = "bottom",
-  legend.text = element_text(colour = "white")
+  legend.text = element_text(colour = "white"),
+  plot.background = element_rect(fill = "black", colour = NA)
 )
 
 #view plot
