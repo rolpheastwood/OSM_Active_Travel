@@ -1,3 +1,26 @@
+#==================
+# CHECK AND INSTALL REQUIRED PACKAGES
+#==================
+packages <- c(
+  "osmextract",
+  "sf",
+  "dplyr",
+  "ggplot2",
+  "osmdata",
+  "svDialogs"
+)
+
+missing <- packages[!packages %in% installed.packages()[, "Package"]]
+
+if (length(missing) > 0) {
+  install.packages(missing)
+}
+
+lapply(packages, library, character.only = TRUE)
+
+#==================
+# LOAD PACKAGES
+#==================
 library("osmextract")
 library("sf")
 library("dplyr")
