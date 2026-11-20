@@ -9,7 +9,6 @@ library("svDialogs")
 # CHOOSE CITY
 #==================
 repeat {
-
   city <- dlgInput(
     message = "Enter a city:",
     default = "London"
@@ -32,7 +31,6 @@ repeat {
     "City not found. Please check the spelling and try again.",
     type = "ok"
   )
-
 }
 
 #==================
@@ -71,7 +69,6 @@ osm_network <- oe_get(
       osm_id,
       highway,
       bicycle,
-      construction,
       horse,
       geometry
     FROM lines
@@ -90,8 +87,7 @@ osm_network <- oe_get(
   ",
   boundary = buffer,
   boundary_type = "clipsrc",
-  extra_tags = c("bicycle","construction","horse")
-
+  extra_tags = c("bicycle", "horse")
 )
 
 #==================
@@ -114,18 +110,6 @@ network <- osm_network |>
       # Pedestrian
       highway %in% c("living_street","step","pedestrian","footway", "path") ~
         "Footway",
-
-      # Construction
-      highway == "construction" &
-        construction %in% c(
-          "bridleway",
-          "cycleway",
-          "footway",
-          "path",
-          "steps",
-          "track"
-        ) ~
-        "Under construction",
 
       # Roads
       highway %in% c(
@@ -167,13 +151,6 @@ ggplot() +
     data = filter(network, network_type == "Cycleway"),
     colour = "#6B1FFF",
     linewidth = 0.42
-  ) +
-  
-  geom_sf(
-    data = filter(network, network_type == "Under construction"),
-    colour = "#A56A43",
-    linewidth = 0.18,
-    linetype = "22"
   ) +
 
   theme_void()
