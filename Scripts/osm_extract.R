@@ -70,6 +70,7 @@ osm_network <- oe_get(
       highway,
       bicycle,
       horse,
+      footway,
       geometry
     FROM lines
     WHERE highway IN (
@@ -87,7 +88,7 @@ osm_network <- oe_get(
   ",
   boundary = buffer,
   boundary_type = "clipsrc",
-  extra_tags = c("bicycle", "horse")
+  extra_tags = c("bicycle", "horse", "footway")
 )
 
 #==================
@@ -100,16 +101,25 @@ network <- osm_network |>
       # Cycleway
       highway == "cycleway" |
         (highway == "path" & bicycle == "designated") ~
-        "Cycleway",
+        "Cycle",
 
       # Bridleway
       highway == "bridleway" |
         (highway == "path" & horse == "designated") ~
-        "Footway",
+        "Pedestrian",
 
       # Pedestrian
-      highway %in% c("living_street","step","pedestrian","footway", "path") ~
-        "Footway",
+      highway %in% c("living_street","step","pedestrian","path") ~
+        "Pedestrian",
+
+      highway == "footway" &
+        (is.na(footway) | footway != "sidewalk") ~
+        "Pedestrian",
+
+      # Sidewalks/ Pavement by road
+      highway == "footway" &
+        footway == "sidewalk" ~
+        "Road Network",
 
       # Roads
       highway %in% c(
@@ -123,7 +133,7 @@ network <- osm_network |>
         "service",
         "track"
       ) ~
-        "Road network",
+        "Road Network",
 
       TRUE ~
         "Other"
@@ -133,24 +143,45 @@ network <- osm_network |>
 #==================
 # PLOT
 #==================
-ggplot() +
-
+plot <- ggplot() +
   geom_sf(
-    data = filter(network, network_type == "Road network"),
-    colour = "#808080",
+    data = filter(network, network_type == "Road Network"),
+    aes(colour = "Road Network"),
     linewidth = 0.18
   ) +
-
   geom_sf(
-    data = filter(network, network_type == "Footway"),
-    colour = "#00B386",
+    data = filter(network, network_type == "Pedestrian"),
+    aes(colour = "Pedestrian"),
     linewidth = 0.23
   ) +
-
   geom_sf(
-    data = filter(network, network_type == "Cycleway"),
-    colour = "#6B1FFF",
+    data = filter(network, network_type == "Cycle"),
+    aes(colour = "Cycle"),
     linewidth = 0.42
   ) +
+  scale_colour_manual(
+  name = NULL,
+  values = c(
+    "Road Network" = "#C0C0C0",
+    "Pedestrian" = "#00B386",
+    "Cycle" = "#6B1FFF"
+  ) 
+) +
+theme_void()+
+theme(
+      legend.position = "bottom",
+)
 
-  theme_void()
+#view plot
+plot
+#==================
+# SAVE PLOT
+#==================
+ggsave(
+  paste0("Outputs/", gsub("[^[:alnum:]]+", "_", city), ".png"),
+  plot,
+  width = 10,
+  height = 10,
+  dpi = 300,
+  bg = "white"
+)

@@ -1,6 +1,10 @@
-# Generated network outputs
+# Generated Data
 Data/*
 !Data/.gitkeep
+
+# Generated Outputs
+Outputs/*
+!Outputs/.gitkeep
 
 # GeoPackages
 *.gpkg
