@@ -88,22 +88,16 @@ osm_network <- oe_get(
       'tertiary'
     )
   ",
-   extra_tags = c("bicycle","construction","horse")
+  boundary = buffer,
+  boundary_type = "clipsrc",
+  extra_tags = c("bicycle","construction","horse")
 
-)
-
-#==================
-# CLIP TO BUFFER
-#==================
-network_lines <- st_intersection(
-  osm_network,
-  st_transform(buffer, st_crs(osm_network))
 )
 
 #==================
 # CATEGORISE (as in OSM carto wiki)
 #==================
-network <- network_lines |>
+network <- osm_network |>
   mutate(
     network_type = case_when(
 
