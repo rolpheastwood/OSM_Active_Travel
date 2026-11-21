@@ -137,12 +137,12 @@ network <- osm_network |>
         "Pedestrian",
 
       highway == "footway" &
-        (is.na(footway) | footway != "sidewalk") ~
+        (is.na(footway) | !footway %in% c("sidewalk", "crossing")) ~
         "Pedestrian",
 
       # Sidewalks/ Pavement by road
       highway == "footway" &
-        footway == "sidewalk" ~
+        footway %in% c("sidewalk", "crossing") ~
         "Road Network",
 
       # Roads
@@ -214,7 +214,7 @@ plot
 # SAVE PLOT
 #==================
 ggsave(
-  paste0("Outputs/", gsub("[^[:alnum:]]+", "_", city), ".png"),
+  paste0("Outputs/", gsub("[^[:alnum:]]+", "_", city),".png"),
   plot,
   width = 10,
   height = 10,
