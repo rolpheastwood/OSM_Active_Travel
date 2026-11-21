@@ -1,7 +1,7 @@
 # OSM Active Travel
 
-Creates active travel maps of cycling and pedestrian infrastructure using OpenStreetMap data.
-Developed using R 4.6.2.
+Creates an active travel maps of cycling and pedestrian infrastructure within 10km circular buffer of a city using OpenStreetMap data.
+Developed in R 4.6.2.
 
 ## Requirements
 
