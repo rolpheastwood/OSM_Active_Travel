@@ -24,7 +24,7 @@ OpenStreetMap extracts are stored in the `Data` folder.
 
 PNG maps are exported to the `Outputs` folder using the selected location as the file name.
 
-## Acknowledgement
+## Acknowledgements
 
 This project uses OpenStreetMap data.
 
