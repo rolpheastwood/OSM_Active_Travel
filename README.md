@@ -24,6 +24,17 @@ OpenStreetMap extracts are stored in the `Data` folder.
 
 PNG maps are exported to the `Outputs` folder using the selected location as the file name.
 
-## Data Source
+## Acknowledgement
 
-© OpenStreetMap contributors, ODbL 1.0.
+This project uses OpenStreetMap data.
+
+Data © OpenStreetMap contributors, ODbL 1.0.
+
+Built in R using the following packages:
+
+- osmextract
+- sf
+- dplyr
+- ggplot2
+- osmdata
+- svDialogs
