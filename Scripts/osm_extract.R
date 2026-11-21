@@ -86,7 +86,8 @@ options(timeout = 1800)
 osm_network <- oe_get(
   city,
   provider = "geofabrik",
-  download_directory = "data",
+  layer = "lines",
+  download_directory = "data", #use tempdir() to store to temp folder
   query = "
     SELECT
       osm_id,
@@ -190,10 +191,20 @@ plot <- ggplot() +
     "Cycle" = "#6B1FFF"
   ) 
 ) +
+labs(caption = "Data © OpenStreetMap contributors") +
 theme_void()+
 theme(
   legend.position = "bottom",
-  legend.text = element_text(colour = "white"),
+  legend.text = element_text(
+    colour = "white",
+    size = 10
+  ),
+  plot.caption = element_text(
+    colour = "white",
+    size = 6,     
+    hjust = 0,
+    margin = margin(l = 3, b = 3)
+  ),
   plot.background = element_rect(fill = "black", colour = NA)
 )
 
