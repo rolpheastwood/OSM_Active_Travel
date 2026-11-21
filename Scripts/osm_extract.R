@@ -205,7 +205,7 @@ theme(
     hjust = 0,
     margin = margin(l = 3, b = 3)
   ),
-  plot.background = element_rect(fill = "black", colour = NA)
+  plot.background = element_rect(fill = "black", colour = NA),
 )
 
 #view plot
@@ -219,5 +219,5 @@ ggsave(
   width = 10,
   height = 10,
   dpi = 300,
-  bg = "black"
+  bg =  "black"
 )
