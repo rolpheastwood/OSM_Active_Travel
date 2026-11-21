@@ -12,7 +12,7 @@ Developed in R 4.6.2.
 1. Download or clone the repository.
 2. Open the project in an R IDE (e.g. RStudio, Positron, VS Code).
 3. Run `osm_extract.R`.
-4. Enter a location when prompted.
+4. Enter a city when prompted.
 
 Required packages will be installed automatically if missing.
 
