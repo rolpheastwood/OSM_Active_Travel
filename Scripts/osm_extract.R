@@ -206,7 +206,7 @@ theme(
     margin = margin(l = 3, b = 3)
   ),
   plot.background = element_rect(fill = "black", colour = NA),
-  panel.background = element_rect(fill = "black", colour = NA),
+  panel.background = element_rect(fill = "black", colour = NA)
 )
 
 #view plot
