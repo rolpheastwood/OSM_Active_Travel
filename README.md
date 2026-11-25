@@ -9,12 +9,15 @@ Developed in R 4.6.2.
 
 ## Running the Script
 
-1. Download or clone the repository.
-2. Open the project in an R IDE (e.g. RStudio, Positron, VS Code).
-3. Run `osm_extract.R`.
-4. Enter a city when prompted.
+1. Download or clone this repository.
+2. Open the project in RStudio, Positron, or VS Code.
+3. Run:
 
-Required packages will be installed automatically if missing.
+   ```r
+   install.packages("renv")  # if not already installed
+   renv::restore()
+
+4. Run osm_extract.R and enter a city name when prompted.
 
 ## Data
 
